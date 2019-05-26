@@ -1,0 +1,56 @@
+#!/bin/sh
+
+set -e
+
+SSH_PUBLIC_KEY="${1:-$SSH_PUBLIC_KEY}"
+SSH_PRIVATE_KEY="${2:-$SSH_PRIVATE_KEY}"
+SSH_HOST="${3:-$SSH_HOST}"
+SSH_USER="${4:-$SSH_USER}"
+SSH_ID="${SSH_ID:-"$HOME/.ssh/id_rsa"}"
+SSH_ID="${5:-$SSH_ID}"
+SSH_CONFIG_FILE="${SSH_CONFIG_FILE:-"$HOME/.ssh/config"}"
+SSH_CONFIG_FILE="${6:-$SSH_CONFIG_FILE}"
+SSH_TEST=""
+
+if [ "$SSH_PUBLIC_KEY" != "" ] || [ "$SSH_PRIVATE_KEY" != "" ]; then
+
+    mkdir -p $(dirname "$SSH_ID")
+
+    if [ "$SSH_PUBLIC_KEY" != "" ]; then
+        echo "$SSH_PUBLIC_KEY" > "$SSH_ID.pub"
+        chmod 600 "$SSH_ID.pub"
+        echo "Added public SSH Key: $SSH_ID.pub"
+    fi
+
+    if [ "$SSH_PRIVATE_KEY" != "" ]; then
+        echo "$SSH_PRIVATE_KEY" > "$SSH_ID"
+        chmod 600 "$SSH_ID"
+        echo "Added private SSH Key: $SSH_ID"
+    fi
+
+    if [ "$SSH_HOST" != "" ]; then
+        SSH_TEST="$SSH_HOST"
+
+        mkdir -p $(dirname "$SSH_CONFIG_FILE")
+
+        if [ "$SSH_USER" = "" ]; then
+            SSH_CONFIG="\nHost $SSH_HOST\n    HostName $SSH_HOST\n    IdentityFile \"$SSH_ID\"\n    StrictHostKeyChecking no\n"
+        else
+            SSH_TEST="$SSH_USER@$SSH_TEST"
+            SSH_CONFIG="Host $SSH_HOST\n    HostName $SSH_HOST\n    User $SSH_USER\n    IdentityFile \"$SSH_ID\"\n    StrictHostKeyChecking no\n"
+        fi
+
+        printf "$SSH_CONFIG" >> "$SSH_CONFIG_FILE"
+        printf "Added SSH config ($SSH_CONFIG_FILE):\n$SSH_CONFIG\n"
+    fi
+
+    eval $(ssh-agent -s)
+    ssh-add $SSH_ID
+
+    if [ "$SSH_TEST" != "" ]; then
+        echo "Testing SSH connection to: $SSH_TEST"
+        set +e
+        ssh -o StrictHostKeyChecking=no -T $SSH_TEST
+        set -e
+    fi
+fi

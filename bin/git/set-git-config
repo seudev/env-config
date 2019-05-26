@@ -1,0 +1,35 @@
+#!/bin/sh
+
+set -e
+
+GIT_USER_EMAIL="${1:-$GIT_USER_EMAIL}"
+
+GIT_USER_NAME="${2:-$GIT_USER_NAME}"
+
+GIT_PUSH_DEFAULT=${GIT_PUSH_DEFAULT:-"simple"}
+GIT_PUSH_DEFAULT=${3:-$GIT_PUSH_DEFAULT}
+
+GIT_CREDENTIAL_HELPER="${GIT_CREDENTIAL_HELPER:-"cache --timeout 300"}"
+GIT_CREDENTIAL_HELPER="${4:-$GIT_CREDENTIAL_HELPER}"
+
+echo "Setting global git"
+
+if [ "$GIT_USER_EMAIL" != "" ]; then
+    git config --global user.email "$GIT_USER_EMAIL"
+    echo "    user.email"
+fi
+
+if [ "$GIT_USER_NAME" != "" ]; then
+    git config --global user.name "$GIT_USER_NAME"
+    echo "    user.name"
+fi
+
+if [ "$GIT_PUSH_DEFAULT" != "" ]; then
+    git config --global push.default "$GIT_PUSH_DEFAULT"
+    echo "    push.default"
+fi
+
+if [ "$GIT_CREDENTIAL_HELPER" != "" ]; then
+    git config --global credential.helper "$GIT_CREDENTIAL_HELPER"
+    echo "    credential.helper"
+fi

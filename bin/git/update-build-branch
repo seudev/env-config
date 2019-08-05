@@ -1,0 +1,60 @@
+#!/bin/sh
+
+set -e
+
+BUILD_TARGET_BRANCH="${1:-$BUILD_TARGET_BRANCH}"
+BUILD_PATH="${2:-$BUILD_PATH}"
+BUILD_COMMIT_MESSAGE="${BUILD_COMMIT_MESSAGE:-"Update build"}"
+BUILD_COMMIT_MESSAGE="${3:-$BUILD_COMMIT_MESSAGE}"
+PUSH_BUILD_BRANCH="${PUSH_BUILD_BRANCH:-"true"}"
+PUSH_BUILD_BRANCH="${4:-$PUSH_BUILD_BRANCH}"
+
+PROJECT_PATH="$(pwd)"
+PROJECT_DIR="$(basename `pwd`)"
+ABSOLUTE_BUILD_PATH="$PROJECT_PATH/$BUILD_PATH"
+TEMP_DIR="$(mktemp -d -t $PROJECT_DIR-XXXXXXXXXX)"
+TEMP_PROJECT_DIR="$TEMP_DIR/$PROJECT_DIR";
+
+echo "Create temp: ${TEMP_DIR}"
+cd "$TEMP_DIR"
+
+echo "Cloning project "${PROJECT_PATH}" to temp"
+git clone "$PROJECT_PATH"
+cd "$PROJECT_DIR"
+
+echo "Checkout to target branch: $BUILD_TARGET_BRANCH"
+git checkout "$BUILD_TARGET_BRANCH"
+
+echo "Removing all tracked files"
+git rm -r *
+
+echo "Coping all files from build path: "$ABSOLUTE_BUILD_PATH""
+cp -r "$ABSOLUTE_BUILD_PATH"/* .
+
+echo "Add the files to git staging"
+git add .
+
+echo "Commit the changes."
+git commit -m "$BUILD_COMMIT_MESSAGE"
+
+echo "Returning to the project: $PROJECT_PATH"
+cd "$PROJECT_PATH"
+
+echo "Checkout to target branch: $BUILD_TARGET_BRANCH"
+git checkout "$BUILD_TARGET_BRANCH"
+
+echo "Pull the changes"
+git pull "$TEMP_PROJECT_DIR"
+
+echo "Removing the temp"
+rm -rf "$TEMP_DIR"
+
+if [ "$PUSH_BUILD_BRANCH" = "true" ]; then
+    echo "Push the changes"
+    git push
+fi
+
+echo "Checkout to previous branch"
+git checkout -
+
+echo "Build branch updated!"

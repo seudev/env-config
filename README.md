@@ -36,20 +36,34 @@ A simple script that returns target branch of the `CURRENT_BRANCH` environment v
 * Define the environment variables and simply execute the script: `get-git-target-branch`.
 * Execute the script passing the inline parameters, by example: `get-git-target-branch "branch-name"`.
 
-| **Input**                  | **Environment Variable** | **Inline Position** | **Default Value**    |
-|----------------------------|--------------------------|---------------------|----------------------|
-| **current branch**         | CURRENT_BRANCH           | 1                   |                      |
-| **develop branch pattern** | DEVELOP_BRANCH           | 2                   | develop              |
-| **feature branch pattern** | FEATURE_BRANCH_PATTERN   | 3                   | feature*             |
-| **release branch pattern** | RELEASE_BRANCH_PATTERN   | 4                   | release*             |
-| **hotfix branch pattern**  | HOTFIX_BRANCH_PATTERN    | 5                   | hotfix*              |
-| **production pranch**      | PRODUCTION_BRANCH        | 6                   | master               |
+| **Input**                  | **Environment Variable** | **Inline Position** | **Default Value** |
+|----------------------------|--------------------------|---------------------|-------------------|
+| **current branch**         | CURRENT_BRANCH           | 1                   |                   |
+| **develop branch pattern** | DEVELOP_BRANCH           | 2                   | develop           |
+| **feature branch pattern** | FEATURE_BRANCH_PATTERN   | 3                   | feature*          |
+| **release branch pattern** | RELEASE_BRANCH_PATTERN   | 4                   | release*          |
+| **hotfix branch pattern**  | HOTFIX_BRANCH_PATTERN    | 5                   | hotfix*           |
+| **production pranch**      | PRODUCTION_BRANCH        | 6                   | master            |
 
 This script is based in feature branch workflow. 
 
 * If the current branch match with the feature branch pattern then returns "develop".
 * If the current branch match with the develop, release or hotfix pattern then returns "master".
 * otherwise returns the current branch name.
+
+### update-build-branch
+
+A script that remove all files a given `build target branch`, copies all files of a given `build path` from *current branch* to `build target branch`, commit and push this changes. An use case is when want publish the static site, generated in the build process, to the *gh-pages* branch.
+
+* Define the environment variables and simply execute the script: `update-build-branch`.
+* Execute the script passing the inline parameters, by example: `update-build-branch "build trarget branch" "build path" ...`.
+
+| **Input**                | **Environment Variable** | **Inline Position** | **Default Value** |
+|--------------------------|--------------------------|---------------------|-------------------|
+| **build target branch**  | BUILD_TARGET_BRANCH      | 1                   |                   |
+| **build path**           | BUILD_PATH               | 2                   |                   |
+| **build commit message** | BUILD_COMMIT_MESSAGE     | 3                   | Update build      |
+| **push build branch**    | PUSH_BUILD_BRANCH        | 4                   | true              |
 
 ### SSH
 

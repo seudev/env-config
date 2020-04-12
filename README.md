@@ -15,7 +15,7 @@ An easy mode to do it is puting the script in some of this folders: `/usr/local/
 
 ### Git
 
-### set-git-config
+#### set-git-config
 
 Sets the global Git config. The configuration can be defined using environment variable or inline parameters
 
@@ -23,13 +23,13 @@ Sets the global Git config. The configuration can be defined using environment v
 * Execute the script passing the parameters inline, by example: `set-git-config "arg1" "arg2" "arg3" ...`.
 
 | **Git config**    | **Environment Variable** | **Inline Position** | **Default Value**   |
-|-------------------|--------------------------|---------------------|---------------------|
+| ----------------- | ------------------------ | ------------------- | ------------------- |
 | user.email        | GIT_USER_EMAIL           | 1                   |                     |
 | user.name         | GIT_USER_NAME            | 2                   |                     |
 | push.default      | GIT_PUSH_DEFAULT         | 3                   | simple              |
 | credential.helper | GIT_CREDENTIAL_HELPER    | 4                   | cache --timeout 300 |
 
-### get-git-target-branch
+#### get-git-target-branch
 
 A simple script that returns target branch of the `CURRENT_BRANCH` environment variable or of the parameter 1.
 
@@ -37,7 +37,7 @@ A simple script that returns target branch of the `CURRENT_BRANCH` environment v
 * Execute the script passing the inline parameters, by example: `get-git-target-branch "branch-name"`.
 
 | **Input**                  | **Environment Variable** | **Inline Position** | **Default Value** |
-|----------------------------|--------------------------|---------------------|-------------------|
+| -------------------------- | ------------------------ | ------------------- | ----------------- |
 | **current branch**         | CURRENT_BRANCH           | 1                   |                   |
 | **develop branch pattern** | DEVELOP_BRANCH           | 2                   | develop           |
 | **feature branch pattern** | FEATURE_BRANCH_PATTERN   | 3                   | feature*          |
@@ -45,13 +45,13 @@ A simple script that returns target branch of the `CURRENT_BRANCH` environment v
 | **hotfix branch pattern**  | HOTFIX_BRANCH_PATTERN    | 5                   | hotfix*           |
 | **production pranch**      | PRODUCTION_BRANCH        | 6                   | master            |
 
-This script is based in feature branch workflow. 
+This script is based in feature branch workflow.
 
 * If the current branch match with the feature branch pattern then returns "develop".
 * If the current branch match with the develop, release or hotfix pattern then returns "master".
 * otherwise returns the current branch name.
 
-### update-build-branch
+#### update-build-branch
 
 A script that remove all files a given `build target branch`, copies all files of a given `build path` from *current branch* to `build target branch`, commit and push this changes. An use case is when want publish the static site, generated in the build process, to the *gh-pages* branch.
 
@@ -59,7 +59,7 @@ A script that remove all files a given `build target branch`, copies all files o
 * Execute the script passing the inline parameters, by example: `update-build-branch "build trarget branch" "build path" ...`.
 
 | **Input**                | **Environment Variable** | **Inline Position** | **Default Value** |
-|--------------------------|--------------------------|---------------------|-------------------|
+| ------------------------ | ------------------------ | ------------------- | ----------------- |
 | **build target branch**  | BUILD_TARGET_BRANCH      | 1                   |                   |
 | **build path**           | BUILD_PATH               | 2                   |                   |
 | **build commit message** | BUILD_COMMIT_MESSAGE     | 3                   | Update build      |
@@ -67,23 +67,32 @@ A script that remove all files a given `build target branch`, copies all files o
 
 ### SSH
 
-### add-ssh-key
+#### add-ssh-key
 
 Adds and test a given ssh key.
 
 * Define the environment variables and simply execute the script: `add-ssh-key`.
 * Execute the script passing the inline parameters, by example: `add-ssh-key "arg1" "arg2" "arg3" ...`.
 
-| **Input**       | **Environment Variable** | **Inline Position** | **Default Value**    |
-|-----------------|--------------------------|---------------------|----------------------|
-| **public key**  | SSH_PUBLIC_KEY           | 1                   |                      |
-| **private key** | SSH_PRIVATE_KEY          | 2                   |                      |
-| **host**        | SSH_HOST                 | 3                   |                      |
-| **user**        | SSH_USER                 | 4                   |                      |
-| **ssh id**      | SSH_ID                   | 5                   | $HOME/.ssh/id_rsa    |
-| **config file** | SSH_CONFIG_FILE          | 6                   | $HOME/.ssh/config    |
+| **Input**       | **Environment Variable** | **Inline Position** | **Default Value** |
+| --------------- | ------------------------ | ------------------- | ----------------- |
+| **public key**  | SSH_PUBLIC_KEY           | 1                   |                   |
+| **private key** | SSH_PRIVATE_KEY          | 2                   |                   |
+| **host**        | SSH_HOST                 | 3                   |                   |
+| **user**        | SSH_USER                 | 4                   |                   |
+| **ssh id**      | SSH_ID                   | 5                   | $HOME/.ssh/id_rsa |
+| **config file** | SSH_CONFIG_FILE          | 6                   | $HOME/.ssh/config |
 
 *Note: If the user is not defined the system user will be used in the test*
+
+### HELPERS
+
+#### hash-dir
+
+Generate a recursively *SHA-1* hash from a given directory.
+
+* Simply execute the script: `hash-dir` to generate a hash from current dir.
+* Execute the script passing the desire directory path, by example: `hash-dir /path/to/some/dir`.
 
 ## Licensing
 

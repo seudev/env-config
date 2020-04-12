@@ -1,0 +1,11 @@
+#!/bin/sh
+
+# For details see: https://stackoverflow.com/questions/545387/linux-compute-a-single-hash-for-a-given-folder-contents
+
+DIRECTORY=${1-$(pwd)}
+
+(find "$DIRECTORY" -type f -print0  | sort -z | xargs -0 sha1sum;
+ find "$DIRECTORY" \( -type f -o -type d \) -print0 | sort -z | \
+   xargs -0 stat -c '%n %a') \
+| sha1sum \
+| cut -d ' ' -f 1
